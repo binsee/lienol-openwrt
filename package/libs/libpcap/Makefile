@@ -8,20 +8,25 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libpcap
-PKG_VERSION:=1.10.2
+PKG_VERSION:=1.10.7
 PKG_RELEASE:=1
 
-PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
+PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://www.tcpdump.org/release/
-PKG_HASH:=db6d79d4ad03b8b15fb16c42447d093ad3520c0ec0ae3d331104dcfb1ce77560
+PKG_HASH:=68fa62cffb974f4275641ce14c2e2d75739251f30e00e6a0900903b247d76a03
 
 PKG_MAINTAINER:=Felix Fietkau <nbd@nbd.name>
 PKG_LICENSE:=BSD-3-Clause
 PKG_LICENSE_FILES:=LICENSE
+PKG_CPE_ID:=cpe:/a:tcpdump:libpcap
 
 PKG_ASLR_PIE_REGULAR:=1
 
-PKG_CONFIG_DEPENDS := CONFIG_PACKAGE_rpcapd
+PKG_CONFIG_DEPENDS := \
+	CONFIG_PACKAGE_rpcapd \
+	CONFIG_PCAP_HAS_USB \
+	CONFIG_PCAP_HAS_BT \
+	CONFIG_PCAP_HAS_NETFILTER
 
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/cmake.mk
@@ -30,7 +35,7 @@ define Package/libpcap
   SECTION:=libs
   CATEGORY:=Libraries
   TITLE:=Low-level packet capture library
-  URL:=http://www.tcpdump.org/
+  URL:=https://www.tcpdump.org/
   MENU:=1
   ABI_VERSION:=1
 endef
@@ -48,8 +53,8 @@ define Package/rpcapd
   SECTION:=net
   CATEGORY:=Network
   TITLE:=Capture daemon to be controlled by a remote libpcap application
-  URL:=http://www.tcpdump.org/
-  DEPENDS+= +libpcap
+  URL:=https://www.tcpdump.org/
+  DEPENDS+= +USE_GLIBC:libcrypt-compat +libpcap
 endef
 
 ifdef CONFIG_PACKAGE_rpcapd
